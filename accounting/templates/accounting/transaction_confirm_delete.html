@@ -1,0 +1,9 @@
+{% extends "accounting/base.html" %}
+{% block content %}
+  <form method="post">
+    {% csrf_token %}
+    <p>Você tem certeza que deseja excluir a transação {{ object }}?</p>
+      <a class="button secondary" href="{% url 'accounting:transaction_edit' pk=transaction.pk %}">Cancelar</a>
+      <button type="submit" class="button alert">Confirmar</button>
+  </form>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "accounting/base.html" %}
+{% load staticfiles %}
+{% block content %}
+    <h2>Transações</h2>
+    <form id="id_filtro_form" method="get">
+        {% csrf_token %}
+        {#        {{ filter.form.as_p }}#}
+        <div class="row">
+            <div class="medium-6 large-3 columns">
+                <label>Ano igual a
+                    {{ filter.form.date__year }}
+                </label>
+            </div>
+            <div class="medium-6 large-3 columns">
+                <label>Mês igual a
+                    {{ filter.form.date__month }}
+                </label>
+            </div>
+            <div class="medium-6 large-4 columns">
+                <label>Descrição
+                    {{ filter.form.notes__icontains }}
+                </label>
+            </div>
+            <div class="medium-6 large-3 columns">
+                <label>Categoria
+                    {{ filter.form.category }}
+                </label>
+            </div>
+            <div class="medium-6 large-3 columns end">
+                <label>Tipo de transação
+                    {{ filter.form.transactionType }}
+                </label>
+            </div>
+            <div class="medium-6 large-3 columns end">
+                <label>Tipo de pagamento
+                    {{ filter.form.paymentType }}
+                </label>
+            </div>
+        </div>
+        <button class="button secondary" type="submit" onclick="$('#id_filtro_form .row :input').val('');">Limpar</button>
+        <button class="button primary" type="submit" id="id_filtrar">Filtrar</button>
+    </form>
+    <hr>
+    <table>
+        <thead>
+        <tr>
+            <th width="120">Data</th>
+            <th width="110">Tipo</th>
+            <th>Descrição</th>
+            <th width="150">Local</th>
+            <th width="150">Categoria</th>
+            <th width="150">Pagamento</th>
+            <th width="110">Valor</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for transaction in transaction_list %}
+            <tr>
+                <td>{{ transaction.date|date:"d/m/Y" }}</td>
+                <td>{{ transaction.get_transactionType_display }}</td>
+                <td>{{ transaction.notes }}</td>
+                <td>{{ transaction.location }}</td>
+                <td>{{ transaction.category }}</td>
+                <td>{{ transaction.get_paymentType_display }}</td>
+                <td><a class="a_amount"
+                       href="{% url 'accounting:transaction_edit' pk=transaction.pk %}">{{ transaction.amount }}</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <td colspan="6">
+            Total
+        </td>
+        <td class="total_amount"></td>
+        </tfoot>
+    </table>
+{% endblock %}
+
+{% block include_script %}
+    <script type="text/javascript">
+        function sumjq(selector) {
+            var sum = 0;
+            $(selector).each(function () {
+                var text = $(this).text().replace(",", ".")
+                console.log(Number(text))
+                sum += Number(text);
+            });
+            return sum;
+        }
+
+        var soma = sumjq('.a_amount');
+
+        var total_amount = $('.total_amount')
+        total_amount.text(parseFloat(soma).toFixed(2))
+        total_amount.text(total_amount.text().replace(".",","))
+    </script>
+{% endblock %}

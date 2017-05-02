@@ -1,0 +1,43 @@
+{% extends "accounting/base.html" %}
+{% block content %}
+    <h1>Inclua uma nova transação</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="large-4 medium-6 columns">
+                <label>Data
+                    {{ form.date }}
+                </label>
+            </div>
+            <div class="large-4 medium-6 columns">
+                <label>Tipo de Transação
+                    {{ form.transactionType }}
+                </label>
+            </div>
+            <div class="large-4 medium-6 columns">
+                <label>Categoria
+                    {{ form.category }}
+                </label>
+            </div>
+            <div class="large-4 medium-6 columns">
+                <label>Local
+                    {{ form.location }}
+                </label>
+            </div>
+            <div class="large-4 medium-6 columns">
+                <label>Valor:
+                    {{ form.amount }}
+                </label>
+            </div>
+            <div class="medium-12 columns">
+                <label>Observações:
+                    {{ form.notes }}
+                </label>
+            </div>
+
+        </div>
+        <a class="button secondary" href="{% url 'accounting:transaction_list' %}">Voltar</a>
+        <a class="button alert" href="{% url 'accounting:transaction_delete' pk=transaction.pk %}">Excluir</a>
+        <button type="submit primary" class="button">Salvar</button>
+    </form>
+{% endblock %}
